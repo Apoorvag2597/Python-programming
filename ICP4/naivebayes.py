@@ -1,28 +1,24 @@
+from sklearn.naive_bayes import GaussianNB
+from sklearn import datasets
 import numpy as np
 import pandas as pd
-from sklearn import datasets
-from sklearn import metrics
-from matplotlib import pyplot as plt
+from sklearn import model_selection
 from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import GaussianNB
-dataset = pd.read_csv('iris.csv')
-X = dataset.drop(['class'], axis=1) # Here first : means fetch all rows :-1 means except last column
-y = dataset.drop(['sepal length','sepal width','petal length'], axis=1)# : is fetch all rows 3 means 3rd column
-X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.2, random_state = 2) # 0.2 test_size means 20%
-print(X_train, y_train)
-model = GaussianNB()
-model.fit(X_train,y_train)
-print(model)
-expected = X_test
-predicted = model.predict(y_test)
-print(expected, ":", predicted)
-# Matlab Plot
-plt.plot(expected, predicted)
-plt.show()
-# Cross Validation
-print(metrics.classification_report(expected, predicted))
-# confusion_matrix - To evaluate Accuracy of classification
-print(metrics.confusion_matrix(expected, predicted))
-model.fit(X_train, y_train)
-Y_predicted = model.predict(X_test)
-print("Gaussian Model Accuracy is ", metrics.accuracy_score(y_test, Y_predicted) * 100)
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn import metrics
+from sklearn.metrics import accuracy_score
+df=pd.read_csv('iris.csv')
+#print(df)
+#df.Species.replace(['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'], [1, 2, 3], inplace=True)
+clf = GaussianNB()
+array = df.values
+X = array[:,0:4]
+Y = array[:,4]
+validation_size = 0.33
+seed = 7
+X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, test_size=validation_size, random_state=seed)
+clf.fit(X_train, Y_train)
+pred_clf = clf.predict(X_validation)
+print(pred_clf)
+print(metrics.accuracy_score(Y_validation,pred_clf))

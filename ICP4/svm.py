@@ -1,15 +1,29 @@
+from sklearn import svm
+from sklearn import datasets
 import numpy as np
 import pandas as pd
+from sklearn import model_selection
 from sklearn.model_selection import train_test_split
-from sklearn.svm import SVC
-from sklearn.metrics import classification_report, confusion_matrix
-dataset = pd.read_csv('iris.csv')
-X = dataset.iloc[:, -1].values # Here first : means fetch all rows :-1 means except last column
-y = dataset.iloc[:, 3].values# : is fetch all rows 3 means 3rd column
-X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.2, random_state = 2)
-C = 1.0 # SVM regularization parameter
-svclassifier = SVC(kernel='linear',C=1,gamma=0)
-svclassifier.fit(X_train, y_train)
-y_pred = svclassifier.predict(X_test)
-print(confusion_matrix(y_test,y_pred))
-print(classification_report(y_test,y_pred))
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn import metrics
+df=pd.read_csv('iris.csv')
+array = df.values
+X = array[:,0:4]
+Y = array[:,4]
+validation_size = 0.33
+seed = 7
+X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, test_size=validation_size, random_state=seed)
+
+
+from sklearn.svm import LinearSVC
+
+model = LinearSVC()
+model.fit(X_train, Y_train.ravel())
+#Calculate Test Prediction
+y_pred = model.predict(X_validation)
+print(y_pred)
+print(metrics.accuracy_score(Y_validation,y_pred))
+
+
